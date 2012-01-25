@@ -16,3 +16,13 @@ That's it! If this doesn't work for you, please visit the excellent resources fr
 If you can't find your answers there, feel free to ask us via Twitter (@cloud9ide), [mailing list](groups.google.com/group/cloud9-ide) or IRC (#cloud9ide on freenode).
 
 Happy coding!
+
+## Sources
+
+Thanks to all of the following for providing images and sound effects:
+
+  chomp - public Domain, recorded by GregoryWeir (http://soundbible.com/1394-Dragon-Bite.html)
+  applause - CC Attribution 3.0, recorded by Yannick Lemieux (http://soundbible.com/1964-Small-Crowd-Applause.html)
+  throat clearing - CC Attribution 3.0, recorded by Mike Koenig (http://soundbible.com/758-Throat-Clearing.html)
+  
+  shark mouth - http://rabfish.blogspot.com/2011/04/snail-guppy-shark.html
