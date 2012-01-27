@@ -11,6 +11,7 @@
     this.setup = function() {
       player = jaws.Sprite({image: "assets/images/plane.png", x: 10, y: 100});
       player.can_shoot = true;
+      player.health = 100;
 
       jaws.on_keydown("esc", function() {
         jaws.switchGameState(MenuState);
@@ -51,6 +52,10 @@
       // Have we hit someone?
       jaws.collideOneWithMany(player, sharks).forEach(function(shark) {
         sharks.remove(shark);
+        player.health -= 20;
+        if (player.health <= 0) {
+          jaws.switchGameState(GameOverState);
+        }
       });
 
       bullets.deleteIf(jaws.isOutsideCanvas);
@@ -72,6 +77,13 @@
       player.draw();
       bullets.draw();
       sharks.draw();
+
+      // Draw HUD
+      jaws.context.font = "bold 15pt terminal";
+      jaws.context.lineWidth = 10;
+      jaws.context.fillStyle = "Red";
+      jaws.context.strokeStyle =  "rgba(200,200,200,0.0)";
+      jaws.context.fillText("Health = " + player.health, 10, 20);
     };
 
     function Bullet(x, y) {
@@ -84,6 +96,27 @@
     }
   };
 
+  function GameOverState() {
+    this.setup = function() {
+      jaws.on_keydown(["esc", "space", "enter"], function() {
+        jaws.switchGameState(PlayState);
+      });
+    };
+    this.draw = function() {
+      jaws.context.drawImage(jaws.assets.get("assets/images/sharkmouth.jpg"), 0, 0, jaws.width, jaws.height);
+
+      jaws.context.font = "bold 60pt terminal";
+      jaws.context.lineWidth = 10
+      jaws.context.fillStyle = "Red"
+      jaws.context.strokeStyle =  "rgba(200,200,200,0.0)"
+      jaws.context.fillText("Game Over!", 30, 80)
+
+      jaws.context.font = "bold 30pt terminal";
+      jaws.context.fillStyle = "White"
+      jaws.context.fillText("Press space to play again", 30, 260);
+    };
+  }
+
   /* MenuState is our lobby/welcome state where the gamer
    * can start the game. */
   function MenuState() {
@@ -92,6 +125,9 @@
     this.setup = function() {
       jaws.on_keydown(["enter", "space"], function() {
         jaws.switchGameState(PlayState);
+      });
+      jaws.on_keydown("q", function() {
+        jaws.switchGameState(GameOverState);
       });
     };
 
@@ -121,6 +157,7 @@
     jaws.assets.add("assets/images/plane.png");
     jaws.assets.add("assets/images/bullet.png");
     jaws.assets.add("assets/images/shark.png");
+    jaws.assets.add("assets/images/sharkmouth.jpg");
     jaws.start(MenuState);
   };
 
