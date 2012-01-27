@@ -1,9 +1,7 @@
 (function() {
 
   var fps = document.getElementById("fps"),
-      player,
-      bullets = new jaws.SpriteList(),
-      sharks = new jaws.SpriteList();
+      player, bullets, sharks;
 
   function startPlay() {
     player = jaws.Sprite({image: "assets/images/plane.png", x: 10, y: 100});
@@ -11,6 +9,10 @@
     player.health = 100;
     player.hit = false;
     player.score = 0;
+
+    bullets = new jaws.SpriteList();
+    sharks = new jaws.SpriteList();
+
     jaws.switchGameState(PlayState);
   }
 
@@ -35,12 +37,15 @@
       if(jaws.pressed("space")) {
         if (player.can_shoot) {
           player.can_shoot = false;
-          bullets.push(new Bullet(player.rect().right - 3, player.y + 5));
+          bullets.push(new jaws.Sprite({image: "assets/images/bullet.png", x: player.rect().right - 3, y: player.y + 5}));
           setTimeout(function() {
             player.can_shoot = true;
           }, 100);
         }
       }
+
+      // Move bullets
+      bullets.forEach(function(bullet) { bullet.x += 4});
 
       // Create new sharks
       if (sharks.length < 4) {
@@ -65,6 +70,13 @@
         setTimeout(function() {
           player.hit = false;
         }, 200);
+      });
+
+      // Did the bullets hit something
+      jaws.collideManyWithMany(bullets, sharks).forEach(function(pair) {
+        console.dir(pair);
+        bullets.remove(pair[0]);
+        sharks.remove(pair[1]);
       });
 
       // Increment the score
@@ -105,14 +117,6 @@
       jaws.context.fillText("Score = " + player.score, 300, 20);
     };
 
-    function Bullet(x, y) {
-      this.x = x
-      this.y = y
-      this.draw = function() {
-        this.x += 4
-        jaws.context.drawImage(jaws.assets.get("assets/images/bullet.png"), this.x, this.y)
-      }
-    }
   };
 
   function PauseState() {
