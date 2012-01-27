@@ -1,22 +1,25 @@
 (function() {
 
-  var fps = document.getElementById("fps");
+  var fps = document.getElementById("fps"),
+      player,
+      bullets = new jaws.SpriteList(),
+      sharks = new jaws.SpriteList();
+
+  function startPlay() {
+    player = jaws.Sprite({image: "assets/images/plane.png", x: 10, y: 100});
+    player.can_shoot = true;
+    player.health = 100;
+    player.hit = false;
+    player.score = 0;
+    jaws.switchGameState(PlayState);
+  }
 
   /** PlayState is the main state where players batter the sharks. */
   function PlayState() {
-    var player,
-        bullets = new jaws.SpriteList(),
-        sharks = new jaws.SpriteList();
 
     this.setup = function() {
-      player = jaws.Sprite({image: "assets/images/plane.png", x: 10, y: 100});
-      player.can_shoot = true;
-      player.health = 100;
-      player.hit = false;
-      player.score = 0;
-
       jaws.on_keydown("esc", function() {
-        jaws.switchGameState(MenuState);
+        jaws.switchGameState(PauseState);
       });
       jaws.preventDefaultKeys(["left", "right", "up", "down", "space"]);
     };
@@ -112,10 +115,26 @@
     }
   };
 
+  function PauseState() {
+    this.setup = function() {
+      jaws.on_keydown("esc", function() {
+        jaws.switchGameState(PlayState);
+      });
+    };
+    this.draw = function() {
+      jaws.context.font = "bold 30pt terminal";
+      jaws.context.lineWidth = 10;
+      jaws.context.fillStyle = "Black";
+      jaws.context.strokeStyle =  "rgba(200,200,200,0.0)";
+      jaws.context.fillText("Paused", 100, 100);
+      
+    };
+  }
+
   function GameOverState() {
     this.setup = function() {
       jaws.on_keydown(["esc", "space", "enter"], function() {
-        jaws.switchGameState(PlayState);
+        startPlay();
       });
     };
     this.draw = function() {
@@ -140,7 +159,7 @@
 
     this.setup = function() {
       jaws.on_keydown(["enter", "space"], function() {
-        jaws.switchGameState(PlayState);
+        startPlay();
       });
       jaws.on_keydown("q", function() {
         jaws.switchGameState(GameOverState);
