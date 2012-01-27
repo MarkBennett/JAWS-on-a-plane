@@ -74,9 +74,12 @@
 
       // Did the bullets hit something
       jaws.collideManyWithMany(bullets, sharks).forEach(function(pair) {
-        console.dir(pair);
+        var shark = pair[1];
         bullets.remove(pair[0]);
-        sharks.remove(pair[1]);
+        shark.health -= 35;
+        if (shark.health <= 0) {
+          sharks.remove(shark);
+        }
       });
 
       // Increment the score
@@ -92,6 +95,7 @@
           x: jaws.width
         });
         shark.y = Math.random() * (jaws.height - shark.height);
+        shark.health = 100;
         return  shark;
       }
     };
