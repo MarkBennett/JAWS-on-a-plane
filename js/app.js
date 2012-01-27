@@ -12,6 +12,8 @@
       player = jaws.Sprite({image: "assets/images/plane.png", x: 10, y: 100});
       player.can_shoot = true;
       player.health = 100;
+      player.hit = false;
+      player.score = 0;
 
       jaws.on_keydown("esc", function() {
         jaws.switchGameState(MenuState);
@@ -56,7 +58,14 @@
         if (player.health <= 0) {
           jaws.switchGameState(GameOverState);
         }
+        player.hit = true;
+        setTimeout(function() {
+          player.hit = false;
+        }, 200);
       });
+
+      // Increment the score
+      player.score += Math.ceil(jaws.game_loop.tick_duration * 10 / 1000);
 
       bullets.deleteIf(jaws.isOutsideCanvas);
       sharks.deleteIf(jaws.isOutsideCanvas);
@@ -78,12 +87,19 @@
       bullets.draw();
       sharks.draw();
 
+      if (player.hit) {
+        jaws.context.drawImage(jaws.assets.get("assets/images/crash.png"), player. x - 10, player.y - 10);
+      }
+
       // Draw HUD
       jaws.context.font = "bold 15pt terminal";
       jaws.context.lineWidth = 10;
       jaws.context.fillStyle = "Red";
       jaws.context.strokeStyle =  "rgba(200,200,200,0.0)";
       jaws.context.fillText("Health = " + player.health, 10, 20);
+
+      jaws.context.fillStyle = "Black"
+      jaws.context.fillText("Score = " + player.score, 300, 20);
     };
 
     function Bullet(x, y) {
@@ -158,6 +174,7 @@
     jaws.assets.add("assets/images/bullet.png");
     jaws.assets.add("assets/images/shark.png");
     jaws.assets.add("assets/images/sharkmouth.jpg");
+    jaws.assets.add("assets/images/crash.png");
     jaws.start(MenuState);
   };
 
