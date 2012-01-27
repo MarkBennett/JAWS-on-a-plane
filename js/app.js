@@ -5,7 +5,8 @@
   /** PlayState is the main state where players batter the sharks. */
   function PlayState() {
     var player,
-        bullets = new jaws.SpriteList();
+        bullets = new jaws.SpriteList(),
+        sharks = new jaws.SpriteList();
 
     this.setup = function() {
       player = jaws.Sprite({image: "assets/images/plane.png", x: 10, y: 100});
@@ -35,14 +36,37 @@
         }
       }
 
+      // Create new sharks
+      if (sharks.length < 4) {
+        if ((Math.random() * 100) < 3) {
+          sharks.push(newShark());
+        }
+      }
+
+      // Move the sharks
+      sharks.forEach(function(shark) {
+        shark.x -= 3;
+      });
+
       bullets.deleteIf(jaws.isOutsideCanvas);
+      sharks.deleteIf(jaws.isOutsideCanvas);
       fps.innerHTML = jaws.game_loop.fps;
+
+      function newShark() {
+        var shark = new jaws.Sprite({
+          image: "assets/images/shark.png",
+          x: jaws.width
+        });
+        shark.y = Math.random() * (jaws.height - shark.height);
+        return  shark;
+      }
     };
 
     this.draw = function() {
       jaws.context.clearRect(0, 0, jaws.width, jaws.height);
       player.draw();
       bullets.draw();
+      sharks.draw();
     };
 
     function Bullet(x, y) {
@@ -91,6 +115,7 @@
   window.onload = function() {
     jaws.assets.add("assets/images/plane.png");
     jaws.assets.add("assets/images/bullet.png");
+    jaws.assets.add("assets/images/shark.png");
     jaws.start(MenuState);
   };
 
