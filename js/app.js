@@ -48,6 +48,11 @@
         shark.x -= 3;
       });
 
+      // Have we hit someone?
+      jaws.collideOneWithMany(player, sharks).forEach(function(shark) {
+        sharks.remove(shark);
+      });
+
       bullets.deleteIf(jaws.isOutsideCanvas);
       sharks.deleteIf(jaws.isOutsideCanvas);
       fps.innerHTML = jaws.game_loop.fps;
