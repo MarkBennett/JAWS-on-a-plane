@@ -57,6 +57,11 @@
       // Move the sharks
       sharks.forEach(function(shark) {
         shark.x -= 3;
+        shark.y += shark.delta_y;
+        if (shark.y < 0 || ((shark.y + shark.height) > jaws.height)) {
+          shark.delta_y *= -1.0;
+          shark.y += shark.delta_y;
+        }
       });
 
       // Have we hit someone?
@@ -76,7 +81,7 @@
       jaws.collideManyWithMany(bullets, sharks).forEach(function(pair) {
         var shark = pair[1];
         bullets.remove(pair[0]);
-        shark.health -= 35;
+        shark.health -= 25;
         if (shark.health <= 0) {
           sharks.remove(shark);
         }
@@ -95,6 +100,7 @@
           x: jaws.width
         });
         shark.y = Math.random() * (jaws.height - shark.height);
+        shark.delta_y = Math.random() * 2 - 1;
         shark.health = 100;
         return  shark;
       }
