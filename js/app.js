@@ -169,25 +169,44 @@
   /* MenuState is our lobby/welcome state where the gamer
    * can start the game. */
   function MenuState() {
-    var index = 0;
+    var index = 0,
+        states = ["Start", "Help"]
 
     this.setup = function() {
       jaws.on_keydown(["enter", "space"], function() {
-        startPlay();
+        switch (index) {
+          case 0:
+            startPlay();
+            break;
+          case 1:
+            break;
+        }
       });
-      jaws.on_keydown("q", function() {
-        jaws.switchGameState(GameOverState);
+      jaws.on_keydown("up", function() {
+        index -= 1;
+      });
+      jaws.on_keydown("down", function() {
+        index += 1;
       });
     };
 
+    this.update = function() {
+      if (index < 0) { index = states.length -1 };
+      if (index === states.length) { index = 0 };
+    };
+
     this.draw = function() {
+      var i;
+
       jaws.context.clearRect(0, 0, jaws.width, jaws.height);
 
-      jaws.context.font = "bold 50pt terminal";
-      jaws.context.lineWidth = 10
-      jaws.context.fillStyle = "Black"
-      jaws.context.strokeStyle =  "rgba(200,200,200,0.0)"
-      jaws.context.fillText("Start", 30, 100)
+      for (i = 0; i < states.length; i++) {
+        jaws.context.font = "bold 40pt terminal";
+        jaws.context.lineWidth = 10
+        jaws.context.fillStyle = (index === i) ? "Red" : "Black"
+        jaws.context.strokeStyle =  "rgba(200,200,200,0.0)"
+        jaws.context.fillText(states[i], 30, 100 + (60 * i))
+      }
     };
   };
 
