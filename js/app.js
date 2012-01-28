@@ -179,6 +179,7 @@
             startPlay();
             break;
           case 1:
+            jaws.switchGameState(HelpState);
             break;
         }
       });
@@ -209,6 +210,24 @@
       }
     };
   };
+
+  function HelpState() {
+    this.setup = function() {
+      jaws.on_keydown(["space", "enter"], function() {
+        jaws.switchGameState(MenuState);
+      });
+    };
+    this.update = function() {};
+    this.draw = function() {
+      jaws.context.clearRect(0, 0, jaws.width, jaws.height);
+
+      jaws.context.font = "bold 15pt terminal";
+      jaws.context.lineWidth = 10
+      jaws.context.fillStyle = "Black"
+      jaws.context.strokeStyle =  "rgba(200,200,200,0.0)"
+      jaws.context.fillText("Move with arrows, shoot with space. Select with Enter.", 20, 20);
+    };
+  }
 
   /**
    * Force <b>item</b> inside canvas by setting items x/y parameters
