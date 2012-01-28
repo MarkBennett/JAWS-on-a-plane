@@ -130,17 +130,50 @@
   };
 
   function PauseState() {
+    var index = 0,
+        states = ["Resume", "Quit"];
+
     this.setup = function() {
+      jaws.on_keydown(["enter", "space"], function() {
+        switch (index) {
+          case 0:
+            jaws.switchGameState(PlayState);
+            break;
+          case 1:
+            jaws.switchGameState(MenuState);
+            break;
+        }
+      });
       jaws.on_keydown("esc", function() {
         jaws.switchGameState(PlayState);
       });
+      jaws.on_keydown("up", function() {
+        index -= 1;
+      });
+      jaws.on_keydown("down", function() {
+        index += 1;
+      });
     };
+
+    this.update = function() {
+      if (index < 0) { index = states.length -1 };
+      if (index === states.length) { index = 0 };
+    };
+
     this.draw = function() {
-      jaws.context.font = "bold 30pt terminal";
+      jaws.context.font = "bold 40pt terminal";
       jaws.context.lineWidth = 10;
       jaws.context.fillStyle = "Black";
       jaws.context.strokeStyle =  "rgba(200,200,200,0.0)";
       jaws.context.fillText("Paused", 100, 100);
+
+      for (i = 0; i < states.length; i++) {
+        jaws.context.font = "bold 20pt terminal";
+        jaws.context.lineWidth = 10
+        jaws.context.fillStyle = (index === i) ? "Red" : "Black"
+        jaws.context.strokeStyle =  "rgba(200,200,200,0.0)"
+        jaws.context.fillText(states[i], 100, 150 + (30 * i))
+      }
       
     };
   }
