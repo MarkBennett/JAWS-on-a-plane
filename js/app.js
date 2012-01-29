@@ -45,7 +45,7 @@
       }
 
       // Move bullets
-      bullets.forEach(function(bullet) { bullet.x += 4});
+      bullets.forEach(function(bullet) { bullet.x += 4; });
 
       // Create new sharks
       if (sharks.length < 4) {
@@ -123,11 +123,10 @@
       jaws.context.strokeStyle =  "rgba(200,200,200,0.0)";
       jaws.context.fillText("Health = " + player.health, 10, 20);
 
-      jaws.context.fillStyle = "Black"
+      jaws.context.fillStyle = "Black";
       jaws.context.fillText("Score = " + player.score, 300, 20);
     };
-
-  };
+  }
 
   function PauseState() {
     var index = 0,
@@ -156,8 +155,8 @@
     };
 
     this.update = function() {
-      if (index < 0) { index = states.length -1 };
-      if (index === states.length) { index = 0 };
+      if (index < 0) { index = states.length -1; }
+      if (index === states.length) { index = 0; }
     };
 
     this.draw = function() {
@@ -169,10 +168,10 @@
 
       for (i = 0; i < states.length; i++) {
         jaws.context.font = "bold 20pt terminal";
-        jaws.context.lineWidth = 10
-        jaws.context.fillStyle = (index === i) ? "Red" : "Black"
-        jaws.context.strokeStyle =  "rgba(200,200,200,0.0)"
-        jaws.context.fillText(states[i], 100, 150 + (30 * i))
+        jaws.context.lineWidth = 10;
+        jaws.context.fillStyle = (index === i) ? "Red" : "Black";
+        jaws.context.strokeStyle =  "rgba(200,200,200,0.0)";
+        jaws.context.fillText(states[i], 100, 150 + (30 * i));
       }
       
     };
@@ -188,13 +187,13 @@
       jaws.context.drawImage(jaws.assets.get("assets/images/sharkmouth.jpg"), 0, 0, jaws.width, jaws.height);
 
       jaws.context.font = "bold 60pt terminal";
-      jaws.context.lineWidth = 10
-      jaws.context.fillStyle = "Red"
-      jaws.context.strokeStyle =  "rgba(200,200,200,0.0)"
-      jaws.context.fillText("Game Over!", 30, 80)
+      jaws.context.lineWidth = 10;
+      jaws.context.fillStyle = "Red";
+      jaws.context.strokeStyle =  "rgba(200,200,200,0.0)";
+      jaws.context.fillText("Game Over!", 30, 80);
 
       jaws.context.font = "bold 30pt terminal";
-      jaws.context.fillStyle = "White"
+      jaws.context.fillStyle = "White";
       jaws.context.fillText("Press space to play again", 30, 260);
     };
   }
@@ -203,7 +202,7 @@
    * can start the game. */
   function MenuState() {
     var index = 0,
-        states = ["Start", "Help"]
+        states = ["Start", "Help"];
 
     this.setup = function() {
       jaws.on_keydown(["enter", "space"], function() {
@@ -225,8 +224,8 @@
     };
 
     this.update = function() {
-      if (index < 0) { index = states.length -1 };
-      if (index === states.length) { index = 0 };
+      if (index < 0) { index = states.length -1; }
+      if (index === states.length) { index = 0; }
     };
 
     this.draw = function() {
@@ -236,13 +235,13 @@
 
       for (i = 0; i < states.length; i++) {
         jaws.context.font = "bold 40pt terminal";
-        jaws.context.lineWidth = 10
-        jaws.context.fillStyle = (index === i) ? "Red" : "Black"
-        jaws.context.strokeStyle =  "rgba(200,200,200,0.0)"
-        jaws.context.fillText(states[i], 30, 100 + (60 * i))
+        jaws.context.lineWidth = 10;
+        jaws.context.fillStyle = (index === i) ? "Red" : "Black";
+        jaws.context.strokeStyle =  "rgba(200,200,200,0.0)";
+        jaws.context.fillText(states[i], 30, 100 + (60 * i));
       }
     };
-  };
+  }
 
   function HelpState() {
     this.setup = function() {
@@ -255,9 +254,9 @@
       jaws.context.clearRect(0, 0, jaws.width, jaws.height);
 
       jaws.context.font = "bold 15pt terminal";
-      jaws.context.lineWidth = 10
-      jaws.context.fillStyle = "Black"
-      jaws.context.strokeStyle =  "rgba(200,200,200,0.0)"
+      jaws.context.lineWidth = 10;
+      jaws.context.fillStyle = "Black";
+      jaws.context.strokeStyle =  "rgba(200,200,200,0.0)";
       jaws.context.fillText("Move with arrows, shoot with space. Select with Enter.", 20, 20);
     };
   }
@@ -266,11 +265,11 @@
    * Force <b>item</b> inside canvas by setting items x/y parameters
    * <b>item</b> needs to have the properties x, y, width & height
    */
-  forceInsideCanvas = function(item) {
-    if(item.x < 0)              { item.x = 0  }
-    if(item.x + item.width > jaws.width)     { item.x = jaws.width - item.width  }
-    if(item.y < 0)              { item.y = 0 }
-    if(item.y + item.height > jaws.height )    { item.y = jaws.height - item.height }
+  function forceInsideCanvas(item) {
+    if(item.x < 0)                            { item.x = 0;  }
+    if(item.x + item.width > jaws.width)      { item.x = jaws.width - item.width;  }
+    if(item.y < 0)                            { item.y = 0; }
+    if(item.y + item.height > jaws.height )   { item.y = jaws.height - item.height; }
   }
 
   window.onload = function() {
