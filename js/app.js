@@ -232,6 +232,7 @@
       var i;
 
       jaws.context.clearRect(0, 0, jaws.width, jaws.height);
+      jaws.context.drawImage(jaws.assets.get("assets/images/shark-with-laser-beam.jpg"), 0, 0, 500, 300);
 
       for (i = 0; i < states.length; i++) {
         jaws.context.font = "bold 40pt terminal";
@@ -273,6 +274,7 @@
   }
 
   window.onload = function() {
+    jaws.assets.add("assets/images/shark-with-laser-beam.jpg");
     jaws.assets.add("assets/images/plane.png");
     jaws.assets.add("assets/images/bullet.png");
     jaws.assets.add("assets/images/shark.png");
