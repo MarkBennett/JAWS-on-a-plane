@@ -34,14 +34,12 @@
       forceInsideCanvas(player);
 
       // Shoot
-      if(jaws.pressed("space")) {
-        if (player.can_shoot) {
-          player.can_shoot = false;
-          bullets.push(new jaws.Sprite({image: "assets/images/bullet.png", x: player.rect().right - 3, y: player.y + 5}));
-          setTimeout(function() {
-            player.can_shoot = true;
-          }, 100);
-        }
+      if (player.can_shoot) {
+        player.can_shoot = false;
+        bullets.push(new jaws.Sprite({image: "assets/images/bullet.png", x: player.rect().right - 3, y: player.y + 5}));
+        setTimeout(function() {
+          player.can_shoot = true;
+        }, 100);
       }
 
       // Move bullets
@@ -108,6 +106,7 @@
 
     this.draw = function() {
       jaws.context.clearRect(0, 0, jaws.width, jaws.height);
+      jaws.context.drawImage(jaws.assets.get("assets/images/the-pacific.png"), 0, 0);
       player.draw();
       bullets.draw();
       sharks.draw();
@@ -280,6 +279,7 @@
     jaws.assets.add("assets/images/shark.png");
     jaws.assets.add("assets/images/sharkmouth.jpg");
     jaws.assets.add("assets/images/crash.png");
+    jaws.assets.add("assets/images/the-pacific.png");
     jaws.start(MenuState);
   };
 
