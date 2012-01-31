@@ -88,8 +88,8 @@
       // Increment the score
       player.score += Math.ceil(jaws.game_loop.tick_duration * 10 / 1000);
 
-      bullets.deleteIf(jaws.isOutsideCanvas);
-      sharks.deleteIf(jaws.isOutsideCanvas);
+      bullets.deleteIf(isOutsideCanvas);
+      sharks.deleteIf(isOutsideCanvas);
       fps.innerHTML = jaws.game_loop.fps;
 
       function newShark() {
@@ -270,6 +270,13 @@
     if(item.x + item.width > jaws.width)      { item.x = jaws.width - item.width;  }
     if(item.y < 0)                            { item.y = 0; }
     if(item.y + item.height > jaws.height )   { item.y = jaws.height - item.height; }
+  }
+
+  function isOutsideCanvas(item) {
+    return (  (item.x + item.width < 0) ||
+              (item.x > jaws.width) ||
+              (item.y + item.height < 0) ||
+              (item.y > jaws.height) );
   }
 
   window.onload = function() {
