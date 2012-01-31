@@ -1,7 +1,7 @@
 (function() {
 
   var fps = document.getElementById("fps"),
-      player, bullets, sharks;
+      player, bullets, sharks, powerUps;
 
   function startPlay() {
     player = jaws.Sprite({image: "assets/images/plane.png", x: 10, y: 100});
@@ -12,6 +12,7 @@
 
     bullets = new jaws.SpriteList();
     sharks = new jaws.SpriteList();
+    powerUps = new jaws.SpriteList();
 
     jaws.switchGameState(PlayState);
   }
@@ -62,6 +63,17 @@
         }
       });
 
+      // Move the powerups
+      powerUps.forEach(function(power_up) {
+        power_up.x -= 1;
+      });
+
+      // Have we hit a powerup?
+      jaws.collideOneWithMany(player, powerUps).forEach(function(power_up) {
+        player.health += 20;
+        powerUps.remove(power_up);
+      });
+
       // Have we hit someone?
       jaws.collideOneWithMany(player, sharks).forEach(function(shark) {
         sharks.remove(shark);
@@ -81,6 +93,15 @@
         bullets.remove(pair[0]);
         shark.health -= 25;
         if (shark.health <= 0) {
+          // Randomly create a powerup where the shark died
+          if (Math.random() * 100 < 5) {
+            powerUps.push(
+              new jaws.Sprite({
+                image:"assets/images/health.png",
+                x: shark.x,
+                y: shark.y
+                }));
+          }
           sharks.remove(shark);
         }
       });
@@ -90,6 +111,7 @@
 
       bullets.deleteIf(isOutsideCanvas);
       sharks.deleteIf(isOutsideCanvas);
+      powerUps.deleteIf(isOutsideCanvas);
       fps.innerHTML = jaws.game_loop.fps;
 
       function newShark() {
@@ -110,6 +132,7 @@
       player.draw();
       bullets.draw();
       sharks.draw();
+      powerUps.draw();
 
       if (player.hit) {
         jaws.context.drawImage(jaws.assets.get("assets/images/crash.png"), player. x - 10, player.y - 10);
@@ -287,6 +310,7 @@
     jaws.assets.add("assets/images/sharkmouth.jpg");
     jaws.assets.add("assets/images/crash.png");
     jaws.assets.add("assets/images/the-pacific.png");
+    jaws.assets.add("assets/images/health.png");
     jaws.start(MenuState);
   };
 
