@@ -1,4 +1,4 @@
-(function() {
+(function(jaws) {
 
   var fps = document.getElementById("fps"),
       player, bullets, sharks, powerUps;
@@ -152,7 +152,8 @@
 
   function PauseState() {
     var index = 0,
-        states = ["Resume", "Quit"];
+        states = ["Resume", "Quit"],
+        i;
 
     this.setup = function() {
       jaws.on_keydown(["enter", "space"], function() {
@@ -315,4 +316,4 @@
   };
 
 
-}());
+}(window.jaws));
