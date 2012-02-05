@@ -1,4 +1,4 @@
-(function(jaws) {
+(function(jaws, visibly) {
 
   var fps = document.getElementById("fps"),
       player, bullets, sharks, powerUps;
@@ -329,8 +329,15 @@
     jaws.assets.add("assets/images/crash.png");
     jaws.assets.add("assets/images/the-pacific.png");
     jaws.assets.add("assets/images/health.png");
+  
+    visibly.visibilitychange(function(state){
+      if("hidden" === state && jaws.game_state instanceof PlayState ) {
+        jaws.switchGameState(PauseState);
+      }
+    });
+    
     jaws.start(MenuState);
   };
 
 
-}(window.jaws));
+}(window.jaws, window.visibly));
