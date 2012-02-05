@@ -26,104 +26,21 @@
       });
       jaws.preventDefaultKeys(["left", "right", "up", "down", "space"]);
     };
+    
     this.update = function() {
-      // Move the plane
-      if(jaws.pressed("left")) { player.x -= 2; }
-      if(jaws.pressed("right")) { player.x += 2; }
-      if(jaws.pressed("down")) { player.y += 2; }
-      if(jaws.pressed("up")) { player.y -= 2; }
-      forceInsideCanvas(player);
-
-      // Shoot
-      if (player.can_shoot) {
-        player.can_shoot = false;
-        bullets.push(new jaws.Sprite({image: "assets/images/bullet.png", x: player.rect().right - 3, y: player.y + 5}));
-        setTimeout(function() {
-          player.can_shoot = true;
-        }, 100);
-      }
-
-      // Move bullets
-      bullets.forEach(function(bullet) { bullet.x += 4; });
-
-      // Create new sharks
-      if (sharks.length < 4) {
-        if ((Math.random() * 100) < 3) {
-          sharks.push(newShark());
-        }
-      }
-
-      // Move the sharks
-      sharks.forEach(function(shark) {
-        shark.x -= 3;
-        shark.y += shark.delta_y;
-        if (shark.y < 0 || ((shark.y + shark.height) > jaws.height)) {
-          shark.delta_y *= -1.0;
-          shark.y += shark.delta_y;
-        }
-      });
-
-      // Move the powerups
-      powerUps.forEach(function(power_up) {
-        power_up.x -= 1;
-      });
-
-      // Have we hit a powerup?
-      jaws.collideOneWithMany(player, powerUps).forEach(function(power_up) {
-        player.health += 20;
-        powerUps.remove(power_up);
-      });
-
-      // Have we hit someone?
-      jaws.collideOneWithMany(player, sharks).forEach(function(shark) {
-        sharks.remove(shark);
-        player.health -= 20;
-        if (player.health <= 0) {
-          jaws.switchGameState(GameOverState);
-        }
-        player.hit = true;
-        setTimeout(function() {
-          player.hit = false;
-        }, 200);
-      });
-
-      // Did the bullets hit something
-      jaws.collideManyWithMany(bullets, sharks).forEach(function(pair) {
-        var shark = pair[1];
-        bullets.remove(pair[0]);
-        shark.health -= 25;
-        if (shark.health <= 0) {
-          // Randomly create a powerup where the shark died
-          if (Math.random() * 100 < 5) {
-            powerUps.push(
-              new jaws.Sprite({
-                image:"assets/images/health.png",
-                x: shark.x,
-                y: shark.y
-                }));
-          }
-          sharks.remove(shark);
-        }
-      });
+      handlePlayerInput();
+      
+      moveThings();
+      deleteOutOfBounds();
+      
+      spawnBaddies();
+      
+      handleCollisions();
 
       // Increment the score
       player.score += Math.ceil(jaws.game_loop.tick_duration * 10 / 1000);
 
-      bullets.deleteIf(isOutsideCanvas);
-      sharks.deleteIf(isOutsideCanvas);
-      powerUps.deleteIf(isOutsideCanvas);
       fps.innerHTML = jaws.game_loop.fps;
-
-      function newShark() {
-        var shark = new jaws.Sprite({
-          image: "assets/images/shark.png",
-          x: jaws.width
-        });
-        shark.y = Math.random() * (jaws.height - shark.height);
-        shark.delta_y = Math.random() * 2 - 1;
-        shark.health = 100;
-        return  shark;
-      }
     };
 
     this.draw = function() {
@@ -148,6 +65,106 @@
       jaws.context.fillStyle = "Black";
       jaws.context.fillText("Score = " + player.score, 300, 20);
     };
+    
+    function deleteOutOfBounds() {
+      bullets.deleteIf(isOutsideCanvas);
+      sharks.deleteIf(isOutsideCanvas);
+      powerUps.deleteIf(isOutsideCanvas);
+    }
+      
+    function spawnBaddies() {
+      if (sharks.length < 4) {
+        if ((Math.random() * 100) < 3) {
+          sharks.push(newShark());
+        }
+      }
+    }
+    
+    function newShark() {
+      var shark = new jaws.Sprite({
+        image: "assets/images/shark.png",
+        x: jaws.width
+      });
+      shark.y = Math.random() * (jaws.height - shark.height);
+      shark.delta_y = Math.random() * 2 - 1;
+      shark.health = 100;
+      return  shark;
+    }
+  
+    function handlePlayerInput() {
+      if(jaws.pressed("left")) { player.x -= 2; }
+      if(jaws.pressed("right")) { player.x += 2; }
+      if(jaws.pressed("up")) { player.y -= 2; }
+      if(jaws.pressed("down")) { player.y += 2; }
+      forceInsideCanvas(player);
+      
+      if (player.can_shoot) {
+        player.can_shoot = false;
+        bullets.push(new jaws.Sprite({image: "assets/images/bullet.png", x: player.rect().right - 3, y: player.y + 5}));
+        setTimeout(function() {
+          player.can_shoot = true;
+        }, 100);
+      }
+    }
+          
+    function moveThings() {
+      // Move bullets
+      bullets.forEach(function(bullet) { bullet.x += 4; });
+
+      // Move the sharks
+      sharks.forEach(function(shark) {
+        shark.x -= 3;
+        shark.y += shark.delta_y;
+        if (shark.y < 0 || ((shark.y + shark.height) > jaws.height)) {
+          shark.delta_y *= -1.0;
+          shark.y += shark.delta_y;
+        }
+      });
+
+      // Move the powerups
+      powerUps.forEach(function(power_up) {
+        power_up.x -= 1;
+      });
+    }
+    
+    function handleCollisions() {
+      // Have we hit a powerup?
+      jaws.collideOneWithMany(player, powerUps).forEach(function(power_up) {
+        player.health += 20;
+        powerUps.remove(power_up);
+      });
+
+      // Have we hit someone?
+      jaws.collideOneWithMany(player, sharks).forEach(function(shark) {
+        sharks.remove(shark);
+        player.health -= 20;
+        if (player.health <= 0) {
+          jaws.switchGameState(GameOverState);
+        }
+        player.hit = true;
+        setTimeout(function() {
+          player.hit = false;
+        }, 200);
+      });
+      
+      jaws.collideManyWithMany(bullets, sharks).forEach(function(pair) {
+        var shark = pair[1];
+        bullets.remove(pair[0]);
+        shark.health -= 25;
+        if (shark.health <= 0) {
+          // Randomly create a powerup where the shark died
+          if (Math.random() * 100 < 5) {
+            powerUps.push(
+              new jaws.Sprite({
+                image:"assets/images/health.png",
+                x: shark.x,
+                y: shark.y
+                }));
+          }
+          sharks.remove(shark);
+        }
+      });
+    }    
   }
 
   function PauseState() {
